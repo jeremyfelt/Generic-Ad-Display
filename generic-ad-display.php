@@ -2,9 +2,9 @@
 /*
 Plugin Name: Generic Ad Display
 Plugin URI:
-Description: Serves ads directly from WordPress for testing.
+Description: Mimics an ad server in WordPress for testing.
 Version: 0.1
-Author: Jeremy Felt
+Author: Jeremy Felt, 10up
 Author URI: http://jeremyfelt.com
 License: GPL2
 */
@@ -27,12 +27,22 @@ License: GPL2
 
 class Generic_Ad_Display_Plugin {
 
+	/**
+	 * @var array container for all of the query args that we'll receive from the ad unit request
+	 */
 	public $query_args = array();
 
+	/**
+	 * Build it.
+	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'capture_ad_request' ) );
 	}
 
+	/**
+	 * Look at incoming requests and capture anything that matches a generic_ad load. We'll provide
+	 * an output for these to replace whatever WordPress had in mind for it.
+	 */
 	public function capture_ad_request() {
 
 		if ( ! is_user_logged_in() )
@@ -56,6 +66,10 @@ class Generic_Ad_Display_Plugin {
 		$this->display_ad_request();
 	}
 
+	/**
+	 * Provide a Javascript file that writes information about the requested ad unit to the document
+	 * that has made the request.
+	 */
 	public function display_ad_request() {
 		// The request was requested from a script tag, so the browser is expecting a JS file.
 		header('Content-Type:text/javascript');
