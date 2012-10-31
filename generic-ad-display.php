@@ -57,13 +57,22 @@ class Generic_Ad_Display_Plugin {
 	}
 
 	public function display_ad_request() {
+		// The request was requested from a script tag, so the browser is expecting a JS file.
 		header('Content-Type:text/javascript');
 		?>
 		document.write('');
-		document.write('<div style="width:<?php echo absint( $this->query_args['width'] ); ?>px;height:<?php echo absint( $this->query_args['height'] ); ?>px;background: #888;color:#fefefe;">Ad Content</div>');
-		<?
-		die();
-	}
+		document.write('<div style="width:<?php echo absint( $this->query_args['width'] ); ?>px;height:<?php echo absint( $this->query_args['height'] ); ?>px;background: #888;color:#fefefe;">');
+		<?php
 
+		// Go through all of the arguments from the ad call and put them in our document.written box
+		foreach ( $this->query_args as $the_arg => $the_val ) :
+			?>
+			document.write('<?php echo esc_js( $the_arg ); ?> = <?php echo esc_js( $the_val ); ?> | ');
+			<?php
+		endforeach;
+		?>document.write('</div>');<?php
+
+		die(); // Wouldn't want WordPress to continue loading, would we?
+	}
 }
 new Generic_Ad_Display_Plugin();
