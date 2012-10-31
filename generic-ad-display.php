@@ -27,6 +27,8 @@ License: GPL2
 
 class Generic_Ad_Display_Plugin {
 
+	public $query_args = array();
+
 	public function __construct() {
 		add_action( 'init', array( $this, 'capture_ad_request' ) );
 	}
@@ -39,15 +41,28 @@ class Generic_Ad_Display_Plugin {
 		if ( strstr( trailingslashit( $_SERVER['REQUEST_URI'] ), '/generic_ad/' ) ) {
 			$url_results = parse_url( $_SERVER['REQUEST_URI'] );
 			if ( isset( $url_results['query'] ) )
-				$query_args = wp_parse_args( $url_results['query'] );
+				$this->query_args = wp_parse_args( $url_results['query'] );
 			else
 				return;
 		} else {
 			return;
 		}
 
-		// Now we have a full set of query args that we can use to display an ad unit
+		// It's my party and our ads need a width and height to work.
+		if ( empty( $this->query_args['width'] ) || empty( $this->query_args['height'] ) )
+			return;
 
+		// Now we have a full set of query args that we can use to display an ad unit
+		$this->display_ad_request();
+	}
+
+	public function display_ad_request() {
+		header('Content-Type:text/javascript');
+		?>
+		document.write('');
+		document.write('<div style="width:<?php echo absint( $this->query_args['width'] ); ?>px;height:<?php echo absint( $this->query_args['height'] ); ?>px;background: #888;color:#fefefe;">Ad Content</div>');
+		<?
+		die();
 	}
 
 }
