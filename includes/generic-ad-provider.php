@@ -24,6 +24,13 @@ class Generic_Ad_ACM_Provider extends ACM_Provider {
 					'height' => 250,
 				),
 			),
+			array(
+				'tag' => '180x180_rail',
+				'url_vars' => array(
+					'width' => 180,
+					'height' => 180,
+				)
+			)
 		);
 
 		/**
