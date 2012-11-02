@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Generic Ad Display
-Plugin URI:
+Plugin URI: https://github.com/jeremyfelt/Generic-Ad-Display
 Description: Mimics an ad server in WordPress for testing.
-Version: 0.1
+Version: 0.2
 Author: Jeremy Felt, 10up
 Author URI: http://jeremyfelt.com
 License: GPL2
@@ -25,7 +25,8 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-include __DIR__ . '/includes/generic-ad-provider.php';
+if ( class_exists( 'ACM_Provider' ) )
+	include __DIR__ . '/includes/generic-ad-provider.php';
 
 class Generic_Ad_Display_Plugin {
 
