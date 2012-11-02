@@ -25,6 +25,8 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+include __DIR__ . '/includes/generic-ad-provider.php';
+
 class Generic_Ad_Display_Plugin {
 
 	/**
@@ -37,6 +39,10 @@ class Generic_Ad_Display_Plugin {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'capture_ad_request' ) );
+
+		add_filter( 'acm_register_provider_slug', array( $this, 'register_provider_slug' ) );
+		add_filter( 'acm_provider_slug', array( $this, 'set_provider_slug' ) );
+		add_filter( 'acm_default_url', array( $this, 'set_default_url' ) );
 	}
 
 	/**
@@ -75,7 +81,7 @@ class Generic_Ad_Display_Plugin {
 		header('Content-Type:text/javascript');
 		?>
 		document.write('');
-		document.write('<div style="width:<?php echo absint( $this->query_args['width'] ); ?>px;height:<?php echo absint( $this->query_args['height'] ); ?>px;background: #888;color:#fefefe;">');
+		document.write('<div style="width:<?php echo absint( $this->query_args['width'] ); ?>px;height:<?php echo absint( $this->query_args['height'] ); ?>px;background: #<?php echo esc_js( $this->query_args['background_color'] ); ?>;color:#fefefe;">');
 		<?php
 
 		// Go through all of the arguments from the ad call and put them in our document.written box
@@ -87,6 +93,22 @@ class Generic_Ad_Display_Plugin {
 		?>document.write('</div>');<?php
 
 		die(); // Wouldn't want WordPress to continue loading, would we?
+	}
+
+	function register_provider_slug( $current_providers ) {
+		$current_providers->generic_ad = array(
+			'provider' => 'Generic_Ad_ACM_Provider',
+			'table' => 'Generic_Ad_ACM_WP_List_Table',
+		);
+		return $current_providers;
+	}
+
+	function set_provider_slug() {
+		return 'generic_ad';
+	}
+
+	function set_default_url() {
+		return home_url() . '/generic_ad/?width=%width%&height=%height%&background_color=%background_color%&describer=%describer%';
 	}
 }
 new Generic_Ad_Display_Plugin();
